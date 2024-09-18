@@ -1,0 +1,181 @@
+# NextJS Notes
+
+### Getting Started
+
+- Next.js is a React framework for building full-stack web applications
+- Provides features like routing, API routes, and server-side rendering out of the box
+- To create a new Next.js project:
+  ```
+  npx create-next-app@latest
+  ```
+- File-based routing: Pages are automatically created based on file structure in the `pages` directory
+  Example: `pages/about.js` becomes `/about` route
+
+###CSS Styling
+
+- Next.js supports CSS Modules, Sass, and CSS-in-JS solutions
+- CSS Modules: 
+  - Create files with `.module.css` extension
+  - Import and use in components:
+    ```jsx
+    import styles from './Button.module.css'
+    
+    function Button() {
+      return <button className={styles.error}>Error Button</button>
+    }
+    ```
+- Global CSS:
+  - Import in `pages/_app.js`:
+    ```jsx
+    import '../styles/globals.css'
+    ```
+- Tailwind CSS integration is built-in with Next.js
+
+### Optimizing Fonts and Images
+
+- Font Optimization:
+  - Use `next/font` to automatically optimize and load custom fonts
+  - Example:
+    ```jsx
+    import { Inter } from 'next/font/google'
+    
+    const inter = Inter({ subsets: ['latin'] })
+    
+    export default function RootLayout({ children }) {
+      return (
+        <html lang="en" className={inter.className}>
+          <body>{children}</body>
+        </html>
+      )
+    }
+    ```
+  - Why optimize fonts:
+    - Improves performance by reducing layout shift as custom fonts load
+    - Ensures consistent font rendering across different devices and browsers
+    - Eliminates the need for external requests, improving load times and privacy
+
+- Image Optimization:
+  - Use `next/image` component for automatic image optimization
+  - Lazy loading, resizing, and serving images in modern formats
+  - Example:
+    ```jsx
+    import Image from 'next/image'
+    
+    function Avatar() {
+      return <Image src="/me.png" alt="me" width="64" height="64" />
+    }
+    ```
+  - Automatically handles responsive images and prevents layout shift
+  - Why optimize images:
+    - Reduces bandwidth usage by serving appropriately sized images
+    - Improves page load times, especially on slower connections
+    - Enhances user experience by preventing layout shifts during image loading
+    - Ensures better performance across various devices with different screen sizes
+
+Problem with regulrar HTML <img> tag:
+Ensure your image is responsive on different screen sizes.
+Specify image sizes for different devices.
+- Prevent layout shift as the images load.
+- Lazy load images that are outside the user's viewport.  
+
+Solution Next.js provides <Image> component:
+
+- Preventing layout shift automatically when images are loading.
+- Resizing images to avoid shipping large images to devices with a smaller viewport.
+- Lazy loading images by default (images load as they enter the viewport).
+- Serving images in modern formats, like WebP and AVIF, when the browser supports it.
+
+### Layout and Pages:
+  - Next.js uses file-based routing system
+  - Special files for creating UI:
+    - `layout.js`: Shared UI for a segment and its children
+    - `page.js`: Unique UI of a route and make routes publicly accessible
+  - Example structure:
+    ```
+    app/
+    ├── layout.js
+    ├── page.js
+    └── dashboard/
+        ├── layout.js
+        └── page.js
+    ```
+  - `layout.js`:
+    - Wraps pages and nested layouts
+    - Used for shared elements like headers, navigation
+    - Example:
+      ```jsx
+      export default function DashboardLayout({ children }) {
+        return (
+          <section>
+            <nav></nav>
+            {children}
+          </section>
+        )
+      }
+      ```
+  - `page.js`:
+    - Defines the unique content of a route
+    - Automatically becomes a route in Next.js
+    - Example:
+      ```jsx
+      export default function Page() {
+        return <h1>Hello, Next.js!</h1>
+      }
+      ```
+  - Benefits:
+    - Encourages component reuse and reduces duplication
+    - Allows for easy implementation of persistent navigation
+    - Simplifies the creation of nested layouts
+    - Enables colocating related UI components and routes
+
+
+### Next.js Routing vs React.js Routing:
+
+- Next.js:
+  - File-based routing system
+  - Automatically creates routes based on file structure in `app` directory
+  - No need for separate routing configuration
+  - Supports nested routes and layouts out of the box
+  - Special files like `page.js` and `layout.js` define UI and structure
+
+- React.js:
+  - Requires manual routing setup, often using libraries like React Router
+  - Routes are typically defined in a central configuration file
+  - Developers need to manually map URLs to components
+  - Nested routes require more explicit configuration
+  - No built-in concept of layouts, requires custom implementation
+
+  ### Navigating Between Pages
+
+  - Next.js provides a powerful file-based routing system that automatically creates routes based on the file structure in the `pages` directory.
+  - To navigate between pages, you can use the `Link` component from `next/link`. This component enables client-side transitions between routes.
+  - Example of using `Link`:
+    ```jsx
+    import Link from 'next/link';
+
+    function Navigation() {
+      return (
+        <nav>
+          <Link href="/about">
+            <a>About Us</a>
+          </Link>
+          <Link href="/services">
+            <a>Our Services</a>
+          </Link>
+          <Link href="/contact">
+            <a>Contact</a>
+          </Link>
+        </nav>
+      );
+    }
+    ```
+  - This approach not only provides a smoother user experience by avoiding full page reloads but also helps in maintaining the state of the application during navigation.
+  - For dynamic routes, you can use the `as` prop to specify the URL shown in the browser:
+    ```jsx
+    <Link href="/post/[pid]" as={`/post/${post.id}`}>
+      <a>{post.title}</a>
+    </Link>
+    ```
+  - Always ensure that the `href` attribute in the `Link` component is correctly formatted to match the file structure in the `pages` directory for accurate routing.
+
+
